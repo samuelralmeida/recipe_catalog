@@ -1,29 +1,44 @@
 {% extends "base.html" %}
 
-{% block title %}
-
-	Catalog
-
-{% endblock %}
-
-{% block head %}
-
-	{{ super() }}
-
-{% endblock %}
-
 {% block content %}
 
-	{% if categories %}
-		{% for category in categories  %}
+<div class="row">
+	<div class="content-header col-sm-12 col-sm-12">
+		{{ error }}
+	</div>
+</div>
+
+<div class="row">
+	<div class="content-categories col-sm-12 col-sm-8">
+		<div class="title">RECIPES BY CATEGORY</div>
+		<div class="categories-content">
+			{% if categories %}
+			{% for category in categories  %}
 			<div>
-				{{ category.name }}
+				<a href="{{ url_for('showItems', category_name=category.name) }}">{{ category.name }}</a>
 			</div>
-		{% endfor %}
-	{% else %}
-		<div>
-			Not categories
+			{% endfor %}
+			{% else %}
+  			<div>
+  				Not categories
+  			</div>
+			{% endif %}
 		</div>
-	{% endif %}
+	</div>
+
+  <div class="content-items col-sm-12 col-sm-4">
+	  <div class="title">LATEST ITEMS</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+	  <div>Teste</div>
+  </div>
+</div>
 
 {% endblock %}

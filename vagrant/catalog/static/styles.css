@@ -1,3 +1,27 @@
-.container {
-	width: 100%;
+body {
+    background-color: #D3E9F6;
+}
+
+.header {
+    background-color: #C0C583;
+}
+
+.brand{
+    color: #3898BE;
+}
+
+.content-items {
+    border-style: solid;
+    border-color: transparent transparent transparent #C0C583;
+}
+
+.title {
+    text-align: center;
+    padding: 1em;
+}
+
+.content-header {
+    text-align: center;
+    padding: 1em;
+
 }
