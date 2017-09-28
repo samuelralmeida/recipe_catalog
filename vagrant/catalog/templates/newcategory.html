@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+	New category
+
+{% endblock %}
+
+{% block head %}
+
+	{{ super() }}
+
+{% endblock %}
+
+{% block content %}
+
+	{% if error %}
+
+	<div>
+		<span class="error">{{ error }}</span>
+	</div>
+
+	{% endif %}
+
+
+	<form action="{{ url_for('createCategory') }}" method="POST">
+
+		<p>Name:</p>
+		<input type="text" size='30' name="name">
+		<br><br>
+		<input type="submit" name="create" value="Create">
+		|
+		<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
+
+	</form>
+
+{% endblock %}
