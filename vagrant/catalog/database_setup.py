@@ -36,7 +36,8 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    description = Column(String(500))
+    ingredients = Column(String(500))
+    directions = Column(String(500))
     link = Column(String(250))
     picture = Column(String(250))
     user_id = Column(Integer, ForeignKey('user.id'))

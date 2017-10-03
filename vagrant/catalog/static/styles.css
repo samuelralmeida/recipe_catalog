@@ -1,27 +1,40 @@
 body {
-    background-color: #D3E9F6;
-}
-
-.header {
     background-color: #C0C583;
 }
 
+.header {
+    background-color: #3599BB;
+}
+
 .brand{
-    color: #3898BE;
+    color: #E7E9E4;
 }
 
 .content-items {
     border-style: solid;
     border-color: transparent transparent transparent #C0C583;
+    background-color: #D3E9F6;
+    height: 500px;/*não responsivo, mudar*/
+}
+
+.content-categories {
+    background-color: #D3E9F6;
+    height: 500px;/*não responsivo, mudar*/
 }
 
 .title {
     text-align: center;
-    padding: 1em;
+    padding: 0.5em;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 2em;
+}
+
+.category {
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.5em;
 }
 
 .content-header {
     text-align: center;
     padding: 1em;
-
 }
