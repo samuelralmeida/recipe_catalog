@@ -22,6 +22,10 @@ body {
     height: 500px;/*não responsivo, mudar*/
 }
 
+.content {
+    background-color: #D3E9F6;
+}
+
 .title {
     text-align: center;
     padding: 0.5em;

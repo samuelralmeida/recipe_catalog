@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="content-header col-xs-12 col-sm-12">
+		{{ error }}
+	</div>
+</div>
+
+<div class="row">
+    <div class="content col-xs-12 col-sm-12">
+        <div class="title">ADD NEW ITEM</div>
+        <div>
+            <form action="{{ url_for('createItem') }}" method="POST">
+
+                <p>Name:</p>
+                <input class="input" type="text" name="name" value="{{ name }}">
+                <br>
+                <div class="error">{{error_name}}</div>
+                <br>
+
+                <p>Ingredients:</p>
+                <input class="input" type="text" name="ingredient1" value="{{ ingredient1 }}">
+                <input class="input" type="text" name="ingredient2" value="{{ ingredient2 }}">
+                <input class="input" type="text" name="ingredient3" value="{{ ingredient3 }}">
+                <input class="input" type="text" name="ingredient4" value="{{ ingredient4 }}">
+                <input class="input" type="text" name="ingredient5" value="{{ ingredient5 }}">
+                <br>
+                <div class="error">{{error_name}}</div>
+                <br>
+
+                <p>Directions:</p>
+                ​<textarea class="input" rows="10" cols="90" name="description">{{ description }}</textarea>
+                <br>
+                <div class="error">{{error_description}}</div>
+                <br>
+
+                <p>Category:</p>
+                <select name="category">
+                    <option value="" disabled selected>Select your option</option>
+                    {% for category in categories  %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <div class="error">{{error_category}}</div>
+                <br>
+
+                <br>
+                <input type="submit" name="create" value="Create">
+                |
+                <a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
+                <br><br>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

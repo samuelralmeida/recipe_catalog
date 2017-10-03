@@ -42,6 +42,10 @@ def showItems(category_name):
 def showItem(category_name, item_name):
     return "show item was chose"
 
+@app.route('/catalog/item/create', methods=['GET', 'POST'])
+def createItem():
+    return "create a item"
+
 @app.route('/catalog/<string:item_name>/edit')
 def editItem(item_name):
     return "edit item was chose"
