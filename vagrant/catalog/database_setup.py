@@ -31,12 +31,29 @@ class Category(Base):
         }
 
 
+class Ingredient(Base):
+    __tablename__ = 'ingredient'
+
+    id = Column(Integer, primary_key=True)
+    ingredient_name = Column(String(80), nullable=False)
+    ingredient_measure = Column(String(80), nullable=False)
+
+    @property
+    def serialize(self):
+        return {
+            'ingredient_name': self.ingredient_name,
+            'ingredient_measure': self.ingredient_measure,
+            'id': self.id,
+        }
+
+
 class Item(Base):
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    ingredients = Column(String(500))
+    ingredient_id = Column(Integer, ForeignKey('ingredient.id'))
+    ingredient = relationship(Ingredient)
     directions = Column(String(500))
     link = Column(String(250))
     picture = Column(String(250))
@@ -52,6 +69,7 @@ class Item(Base):
             'name': self.name,
             'id': self.id,
             'category': self.category,
+            'ingredient': self.ingredient,
             'description': self.description,
             'link': self.link,
             'picture': self.picture,
