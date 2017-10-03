@@ -14,7 +14,27 @@
 <body>
 
 <nav class="header navbar navbar-expand-md fixed-top navbar-light">
-    <a class="brand navbar-brand" href="#">Vóisa Recipes</a>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="brand navbar-brand" href="{{ url_for('showCategories') }}">Vóisa Recipes</a>
+        </div>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li class="log-button">
+            <div class="fb-login-button"
+                data-max-rows="1"
+                data-size="small"
+                data-button-type="login_with"
+                data-show-faces="false"
+                data-auto-logout-link="true"
+                data-use-continue-as="true"
+                scope="public_profile,email"
+                onlogin="checkLoginState();">
+            </div>
+        </li>
+    </ul>
+
+    </div>
 </nav>
 
 <div class="container">
@@ -23,4 +43,7 @@
 </div>
 
 </body>
+
+{% include "facebooklogin.html" %}
+
 </html>

@@ -2,13 +2,29 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, url_for, flash, request, redirect
+from flask import session as login_session
 import crud
+import json
+import facebook_login
 
 app = Flask(__name__)
 
 @app.route('/login')
 def showLogin():
     return "show login page"
+
+@app.route('/fbconnect', methods=['POST'])
+def fbconnect():
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    access_token = request.data
+    response = facebook_login.fbconnect(login_session, access_token)
+    if response == "Logged in":
+        flash("Now logged in as %s" % login_session['username'])
+        return redirect(url_for('showCategories'))
+    return response
 
 @app.route('/catalog.json')
 def JSONcatalog():
@@ -114,4 +130,4 @@ def deleteItem(item_name):
 if __name__ == '__main__':
     app.secret_key = '^4u!gn!3Y8Fv'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
