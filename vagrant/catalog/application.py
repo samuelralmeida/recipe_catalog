@@ -6,14 +6,67 @@ from flask import session as login_session
 import crud
 import json
 import facebook_login
+import random
+import string
 
 app = Flask(__name__)
 
 @app.route('/login')
 def showLogin():
-    return "show login page"
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    return render_template('login.html', STATE=state)
 
 @app.route('/fbconnect', methods=['POST'])
+def fbconnect():
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    access_token = request.data
+    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
+        'web']['app_id']
+    app_secret = json.loads(
+        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id={}&client_secret={}&fb_exchange_token={}'.format(
+        app_id, app_secret, access_token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+
+    # Use token to get user info from API
+    userinfo_url = "https://graph.facebook.com/v2.10/me"
+    # strip expire tag from access token
+    token = result.split('&')[0]
+
+    url = 'https://graph.facebook.com/v2.10/me?{}&fields=name,id,email'.format(token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    print "url sent for api access: {}".format(url)
+    print "API JSON result: {}".format(result)
+    data = json.loads(result)
+    #login_session['provider'] = 'facebook'
+    login_session['username'] = data["name"]
+    login_session['email'] = data["email"]
+    login_session['facebook_id'] = data["id"]
+
+    # Get user picture
+    url = 'https://graph.facebook.com/v2.10/me/picture?{}&redirect=0&height=200&width=200'.format(
+        token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    data = json.loads(result)
+
+    login_session['picture'] = data["data"]["url"]
+
+    user_id = crud.getUserID(login_session['email'])
+    if not user_id:
+        user_id = crud.createUser(login_session)
+    login_session['user_id'] = user_id
+
+    return redirect(url_for('showCategories'))
+
+"""@app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -25,7 +78,7 @@ def fbconnect():
         flash("Now logged in as %s" % login_session['username'])
         return redirect(url_for('showCategories'))
     return response
-
+"""
 @app.route('/catalog.json')
 def JSONcatalog():
     return "JSON de todo o catálogo"
