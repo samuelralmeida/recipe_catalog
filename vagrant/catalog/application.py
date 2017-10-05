@@ -33,7 +33,7 @@ def fbconnect():
         open('fb_client_secrets.json', 'r').read())['web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = ('https://graph.facebook.com/v2.9/oauth/access_token?'
+    url = ('https://graph.facebook.com/v2.8/oauth/access_token?'
            'grant_type=fb_exchange_token&client_id=%s&client_secret=%s'
            '&fb_exchange_token=%s') % (app_id, app_secret, access_token)
     http = httplib2.Http()
@@ -44,7 +44,7 @@ def fbconnect():
     token = 'access_token=' + data['access_token']
 
     # Use token to get user info from API.
-    url = 'https://graph.facebook.com/v2.9/me?%s&fields=name,id,email' % token
+    url = 'https://graph.facebook.com/v2.8/me?%s&fields=name,id,email' % token
     http = httplib2.Http()
     result = http.request(url, 'GET')[1]
     data = json.loads(result)
