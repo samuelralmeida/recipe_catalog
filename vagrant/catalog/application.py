@@ -53,21 +53,53 @@ def fbconnect():
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
+    stored_token = token.split("=")[1]
+    login_session['access_token'] = stored_token
+
+    # Get user picture
+    url = 'https://graph.facebook.com/v2.8/me/picture?{}&redirect=0&height=200&width=200'.format(
+        token)
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[1]
+    data = json.loads(result)
+
+    login_session['picture'] = data["data"]["url"]
+
     #see if user exists
-    user_id = getUserId(login_session['email'])
+    user_id = crud.getUserID(login_session['email'])
     if not user_id:
-        user_id = createUser(login_session)
+        user_id = crud.createUser(login_session)
     login_session['user_id'] = user_id
 
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1><img src="'
-    output += login_session['picture']
-    output += ' ">'
-
     flash("Now logged in as %s" % login_session['username'])
-    return output
+    return 'Logged in'
+
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            credentials = login_session.get('credentials')
+            google_login.gdisconnect(credentials)
+            del login_session['gplus_id']
+            # del login_session['credentials']
+        if login_session['provider'] == 'facebook':
+            facebook_id = login_session['facebook_id']
+            access_token = login_session['access_token']
+            url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
+            h = httplib2.Http()
+            result = h.request(url, 'DELETE')[1]
+            del login_session['facebook_id']
+
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showCategories'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('showCategories'))
 
 @app.route('/catalog.json')
 def JSONcatalog():

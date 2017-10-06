@@ -50,7 +50,10 @@
 {% endblock %}
 
 {% block content %}
+<div>
     <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
     <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
     </fb:login-button>
+</div>
+<div id='result'></div>
 {% endblock %}
