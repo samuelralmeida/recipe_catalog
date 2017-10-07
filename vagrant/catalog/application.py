@@ -195,23 +195,25 @@ def showCategories():
 #this route only can be access for adim at the end of the app
 @app.route('/catalog/category/create', methods=['GET', 'POST'])
 def createCategory():
-    if not login_session:
+    if 'username' not in login_session:
             flash('You are not administrator')
             return redirect(url_for('showCategories'))
     else:
         user_id = crud.getUserID(login_session['email'])
         user = crud.getUserInfo(user_id)
         if user.group == "admin":
+            log = True
             if request.method == 'POST':
                 new_category_name = request.form['name']
                 crud_function = crud.newCategory(new_category_name)
                 if crud_function:
-                    return render_template('newcategory.html', error=crud_function)
+                    return render_template('newcategory.html',
+                                            error=crud_function, log=log)
                 else:
                     flash('Category has been created')
                     return redirect(url_for('showCategories'))
             else:
-                return render_template('newcategory.html')
+                return render_template('newcategory.html', log=log)
         else:
             flash('You are not administrator')
             return redirect(url_for('showCategories'))
