@@ -260,9 +260,9 @@ def createItem():
 
         if not directions:
             have_error = True
-            params['error_description'] = "You must write a description"
+            params['error_directions'] = "You must write directions"
 
-        if ingredients is False:
+        if ingredients.count(u'') == 5:
             have_error = True
             params['error_ingredients'] = "At least one ingredient is required"
 

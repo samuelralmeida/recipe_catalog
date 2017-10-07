@@ -70,3 +70,19 @@ body {
     font-family: 'PT Sans', sans-serif;
     font-size: 1.5em;
 }
+
+.directions {
+    width: 100%;
+}
+
+.category, .name-item, .ingredient {
+    width: 100%;
+}
+
+.ingredient {
+    margin-bottom: 2px;
+}
+
+.error {
+    color: #ff0000;
+}
