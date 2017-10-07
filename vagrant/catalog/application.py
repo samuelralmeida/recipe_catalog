@@ -186,11 +186,13 @@ def JSONcatalog():
 @app.route('/catalog')
 def showCategories():
     categories = crud.findAllCategory()
+    items = crud.findRecentItems()
     if 'username' not in login_session:
-        return render_template('catalog.html', categories=categories)
+        return render_template('catalog.html', categories=categories, items=items)
     else:
         log = login_session
-        return render_template('catalog.html', categories=categories, log=log)
+        return render_template('catalog.html', categories=categories,
+                                items=items, log=log)
 
 #this route only can be access for adim at the end of the app
 @app.route('/catalog/category/create', methods=['GET', 'POST'])
