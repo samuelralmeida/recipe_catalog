@@ -35,7 +35,7 @@
       success: function(result) {
         // Handle or verify the server response if necessary.
         if (result) {
-          $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+          $('#result').html('Login Successful!</br>'+'</br>Redirecting...')
          setTimeout(function() {
           window.location.href = "/catalog";
          }, 4000);
@@ -86,23 +86,32 @@ function signInCallback(authResult) {
 {% endblock %}
 
 {% block content %}
-<div>
-    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-    <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-    </fb:login-button>
-</div>
-<div id='result'></div>
 
-<div id="signInButton">
-  <span class="g-signin"
-    data-scope="openid email"
-    data-clientid="714442426543-5mf2ntfnj7b09f8g98ib6jmceu0raq7m.apps.googleusercontent.com"
-    data-redirecturi="postmessage"
-    data-accesstype="offline"
-    data-cookiepolicy="single_host_origin"
-    data-callback="signInCallback"
-    data-approvalprompt="force">
-  </span>
+<div class="row">
+    <div class="content-login col-xs-12 col-sm-12">
+        <div class="col-lg-6 col-sm-8 col-xs-12 col-lg-offset-3 col-sm-offset-2">
+            <div class="login-form">
+                <h2 class="text-center">LOGIN</h2>
+                <div class="logins-button form-horizontal text-center">
+                    <div class="fb-button">
+                        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                        <a href='javascript:sendTokenToServer()'>Login with Facebook</a>
+                        </fb:login-button>
+                    </div>
+                    <br>
+                    <div class="g-signin g-button"
+                        data-scope="openid email"
+                        data-clientid="714442426543-5mf2ntfnj7b09f8g98ib6jmceu0raq7m.apps.googleusercontent.com"
+                        data-redirecturi="postmessage"
+                        data-accesstype="offline"
+                        data-cookiepolicy="single_host_origin"
+                        data-callback="signInCallback"
+                        data-approvalprompt="force">
+                    </div>
+                </div>
+                <h3 id="result" class="text-center"></h3>
+            </div>
+        </div>
+    </div>
 </div>
-
 {% endblock %}

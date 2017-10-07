@@ -93,7 +93,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('g_client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -156,9 +156,9 @@ def gconnect():
     login_session['provider'] = 'google'
 
     # see if user exists, if it doesn't make a new one
-    user_id = getUserID(data["email"])
+    user_id = crud.getUserID(data["email"])
     if not user_id:
-        user_id = createUser(login_session)
+        user_id = crud.createUser(login_session)
     login_session['user_id'] = user_id
 
     flash("you are now logged in as %s" % login_session['username'])
@@ -169,16 +169,9 @@ def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
-            del login_session['api_id']
-            # del login_session['credentials']
-        if login_session['provider'] == 'facebook':
+        elif login_session['provider'] == 'facebook':
             fbdisconnect()
-            del login_session['api_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
-        del login_session['user_id']
-        del login_session['provider']
+        print login_session
         flash("You have successfully been logged out.")
         return redirect(url_for('showCategories'))
     else:
@@ -298,6 +291,14 @@ def fbdisconnect():
     url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
+    del login_session['access_token']
+    del login_session['api_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
+    del login_session['user_id']
+    del login_session['provider']
+    del login_session['state']
     return "you have been logged out"
 
 @app.route('/gdisconnect')
@@ -312,12 +313,15 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
+    del login_session['access_token']
+    del login_session['api_id']
+    del login_session['username']
+    del login_session['email']
+    del login_session['picture']
+    del login_session['user_id']
+    del login_session['provider']
+    del login_session['state']
     if result['status'] == '200':
-        del login_session['access_token']
-        del login_session['api_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
