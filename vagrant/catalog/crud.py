@@ -75,3 +75,16 @@ def getUserID(email):
         return user.id
     except:
         return None
+
+def editAdmin(email):
+    user_id = getUserID(email)
+    user = getUserInfo(user_id)
+    user.group = 'admin'
+    session.add(user)
+    session.commit()
+
+def deleteUser(email):
+    user_id = getUserID(email)
+    user = getUserInfo(user_id)
+    session.delete(user)
+    session.commit()

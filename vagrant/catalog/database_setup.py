@@ -16,6 +16,7 @@ class User(Base):
     email = Column(String(80), nullable=False)
     picture = Column(String(250))
     api_id = Column(String(250))
+    group = Column(String(5), default='user')
 
 
 class Category(Base):
