@@ -9,8 +9,9 @@
 	<div class="title">ADD NEW ITEM</div>
 </div>
 
-<div class="row">
-	<div class="newItem-form">
+<div class="row newItem-form">
+	<br>
+	<div>
 		<form action="{{ url_for('createItem') }}" method="POST">
 			<div class="content-ingredient col-xs-12 col-sm-4">
 				<p>Name:</p>
@@ -60,5 +61,6 @@
 
 		</form>
 	</div>
+	<br><br>
 </div>
 {% endblock %}

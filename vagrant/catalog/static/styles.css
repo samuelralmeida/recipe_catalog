@@ -86,3 +86,17 @@ body {
 .error {
     color: #ff0000;
 }
+
+.newItem-form {
+    background-color: #D3E9F6;
+}
+
+.user-image {
+    width: 50px;
+}
+
+@media only screen and (max-width: 768px) {
+	.user-image{
+		display: none;
+	}
+}

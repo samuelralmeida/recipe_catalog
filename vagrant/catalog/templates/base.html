@@ -21,15 +21,19 @@
         <div class="navbar-header">
             <a class="brand navbar-brand" href="{{ url_for('showCategories') }}">Vóisa Recipes</a>
         </div>
-    <ul class="nav navbar-nav navbar-right">
         {% if log %}
+        <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('createItem') }}">Create Item</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('disconnect') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><img class="user-image" src={{log.picture}} alt="User picture"></li>
+        </ul>
         {% else %}
+        <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ url_for('showLogin') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul>
         {% endif %}
-
-    </ul>
-
     </div>
 </nav>
 

@@ -3,26 +3,13 @@
 {% block content %}
 
 <div class="row">
-	{% if log %}
-		<div class="content-header col-xs-12 col-sm-8">
-			{% with messages = get_flashed_messages() %}
-			{% if messages %}
-			<div class="flash_message"> {{ message }} </div>
-			{% endif %}
-			{% endwith %}
-		</div>
-		<div class="content-header col-xs-12 col-sm-4">
-			<a href="{{ url_for('createItem') }}">Add item</a>
-		</div>
-	{% else %}
-		<div class="content-header col-xs-12 col-sm-12">
-			{% with messages = get_flashed_messages() %}
-			{% if messages %}
-			<div class="flash_message"> {{ message }} </div>
-			{% endif %}
-			{% endwith %}
-		</div>
-	{% endif %}
+	<div class="content-header col-xs-12 col-sm-12">
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="flash_message"> {{ message }} </div>
+		{% endif %}
+		{% endwith %}
+	</div>
 </div>
 
 <div class="row">
