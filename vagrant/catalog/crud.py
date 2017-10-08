@@ -19,7 +19,7 @@ def findCategory_byID(category_id):
     return session.query(Category).filter_by(id=category_id).first()
 
 def findRecentItems():
-    return session.query(Item).order_by(Item.time_created).limit(10)
+    return session.query(Item).order_by(desc(Item.time_created)).limit(10)
 
 def newCategory(name):
     result = findCategory(name)
