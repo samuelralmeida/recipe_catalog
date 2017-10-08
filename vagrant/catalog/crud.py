@@ -36,7 +36,7 @@ def findItem(name):
     return session.query(Item).filter_by(name=name).first()
 
 def findIngredients(item_id):
-    return session.query(Ingredient).filter_by(item_id=item_id).all()    
+    return session.query(Ingredient).filter_by(item_id=item_id).all()
 
 def findItemID(name):
     item = session.query(Item).filter_by(name=name).one()
@@ -54,7 +54,6 @@ def addIngredients(ingredients, item_id):
         if ingredient:
             new_ingredient = Ingredient(ingredient_name=ingredient,
                                       item_id=item_id)
-
 
 def newItem(name, directions, ingredients, category_id, user_id):
     result = findItem(name)
@@ -89,6 +88,12 @@ def getUserID(email):
         return user.id
     except:
         return None
+
+def deleteItem(item_name):
+    item = findItem(item_name)
+    if item:
+        session.delete(item)
+        session.commit()
 
 def editAdmin(email):
     user_id = getUserID(email)

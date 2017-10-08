@@ -41,8 +41,16 @@
     <br>
     <div class="row">
         <div class="info col-xs-12 col-sm-12">
+            {% if own_user %}
+            <span class="subtitle">User: </span>
+            <span class="text">You</span><br>
+            <span class="opt"><a href="{{ url_for('editItem', item_name=item.name) }}">Edit item</a></span>
+            |
+            <span class="opt"><a href="{{ url_for('deleteItem', item_name=item.name) }}">Delete item</a></span>
+            {% else %}
             <span class="subtitle">User: </span><br>
             <span class="text">{{ item.user.name }}</span>
+            {% endif %}
         </div>
     </div>
     <br>

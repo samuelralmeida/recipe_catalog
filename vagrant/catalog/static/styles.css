@@ -124,7 +124,7 @@ body {
     font-size: 1.0em;
 }
 
-.ingredients, .directions, .info {
+.ingredients, .directions, .info, .delete-item {
     margin-left: 0.4em;
     margin-right: 0.4em;
 }

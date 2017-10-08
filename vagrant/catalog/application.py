@@ -244,7 +244,14 @@ def showItem(category_name, item_name):
             return render_template('item.html', item=item, ingredients=ingredients)
         else:
             log = login_session
-            return render_template('item.html', item=item, ingredients=ingredients, log=log)
+            if item.user_id == login_session['user_id']:
+                own_user = True
+                return render_template('item.html', item=item,
+                                        ingredients=ingredients, log=log,
+                                        own_user=own_user)
+            else:
+                return render_template('item.html', item=item,
+                                        ingredients=ingredients, log=log)
 
 @app.route('/catalog/item/create', methods=['GET', 'POST'])
 def createItem():
@@ -252,7 +259,7 @@ def createItem():
         flash('You must be logged to create a item')
         return redirect(url_for('showCategories'))
     else:
-        log = True
+        log = login_session
         categories = crud.findAllCategory()
         if request.method == 'POST':
             name = request.form['name']
@@ -316,9 +323,28 @@ def createItem():
 def editItem(item_name):
     return "edit item was chose"
 
-@app.route('/catalog/<string:item_name>/delete')
+@app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
-    return "delete item was chose"
+    if 'username' not in login_session:
+        flash('You must be logged to delete a item')
+        return redirect(url_for('showCategories'))
+    else:
+        log = login_session
+        item = crud.findItem(item_name)
+        if request.method == 'POST':
+            if item.user_id == login_session['user_id']:
+                crud.deleteItem(item_name)
+                flash('This item has been deleted')
+                return redirect(url_for('showCategories'))
+            else:
+                flash('You can not delete item by other user')
+                return redirect(url_for('showCategories'))
+        else:
+            if item == None:
+                flash('This item does not exist')
+                return redirect(url_for('showCategories'))
+            else:
+                return render_template('deleteitem.html', item=item, log=log)
 
 @app.route('/fbdisconnect')
 def fbdisconnect():
