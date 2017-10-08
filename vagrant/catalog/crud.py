@@ -89,6 +89,32 @@ def getUserID(email):
     except:
         return None
 
+def editItem(original_name, item_name, item_directions, item_ingredient1,
+                item_ingredient2, item_ingredient3, item_ingredient4,
+                item_ingredient5, item_category_id):
+    item = findItem(original_name)
+    ingredient = findIngredients(item.id)
+    if item is not None:
+        if item_name:
+            item.name = item_name
+        if item_directions
+            item.directions = item_directions
+        if item_ingredient1:
+            item.ingredient1 = item_ingredient1
+        if item_ingredien2:
+            item.ingredient2 = item_ingredient2
+        if item_ingredient3:
+            item.ingredient3 = item_ingredient3
+        if item_ingredient4:
+            item.ingredient4 = item_ingredient4
+        if item_ingredient5:
+            item.ingredient5 = item_ingredient5
+        if item_category_id:
+            item.category_id = item_category_id
+
+        session.add(item)
+        session.commit()
+
 def deleteItem(item_name):
     item = findItem(item_name)
     if item:

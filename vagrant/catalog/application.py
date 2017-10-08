@@ -319,9 +319,74 @@ def createItem():
             return render_template('newitem.html', categories=categories, log=log)
         return "create a item"
 
-@app.route('/catalog/<string:item_name>/edit')
+@app.route('/catalog/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(item_name):
-    return "edit item was chose"
+    if 'username' not in login_session:
+        flash('You must be logged to edit a item')
+        return redirect(url_for('showCategories'))
+    else:
+        log = login_session
+        item = crud.findItem(item_name)
+        if request.method == 'POST':
+            if item.user_id == login_session['user_id']:
+                original_name = item.name
+                categories = crud.findAllCategory()
+                item_name = None
+                item_directions = None
+                item_ingredient1 = None
+                item_ingredient2 = None
+                item_ingredient3 = None
+                item_ingredient4 = None
+                item_ingredient5 = None
+                item_category_id = None
+                have_edition = False
+
+                if request.form['name']:
+                    have_edition = True
+                    item_name = request.form['name']
+                if request.form['directions']:
+                    have_edition = True
+                    item_directions = request.form['directions']
+                if request.form['ingredient1']:
+                    have_edition = True
+                    item_ingredient1 = request.form['ingredient1']
+                if request.form['ingredient2']:
+                    have_edition = True
+                    item_ingredient2 = request.form['ingredient2']
+                if request.form['ingredient3']:
+                    have_edition = True
+                    item_ingredient3 = request.form['ingredient3']
+                if request.form['ingredient4']:
+                    have_edition = True
+                    item_ingredient4 = request.form['ingredient4']
+                if request.form['ingredient5']:
+                    have_edition = True
+                    item_ingredient5 = request.form['ingredient51']
+                if request.form.get('category') is not None:
+                    have_edition = True
+                    item_category_id = int(request.form.get('category'))
+
+                if have_edition:
+                    crud.editItem(original_name, item_name, item_directions,
+                                    item_ingredient1, item_ingredient2,
+                                    item_ingredient3, item_ingredient4,
+                                    item_ingredient5, item_category_id)
+                    category = crud.findCategory_byID(item_category_id)
+                    flash('Your item has benn edited')
+                    return redirect(url_for('showItem', item_name=item.name,
+                                            category_name=category.name))
+                else:
+                    flash('You did not change anything')
+                    return render_template('edititem.html', item=item)
+            else:
+                flash('You can not edit a item by other use')
+                return redirect(url_for('showCategories'))
+        else:
+            if item is None:
+                flash("This item does not exist")
+                return redirect(url_for('showCategories'))
+            else:
+                return render_template('edititem.html', item=item)
 
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
