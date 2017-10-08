@@ -112,3 +112,19 @@ body {
 		display: none;
 	}
 }
+
+.subtitle {
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.text {
+    font-family: 'PT Sans', sans-serif;
+    font-size: 1.0em;
+}
+
+.ingredients, .directions, .info {
+    margin-left: 0.4em;
+    margin-right: 0.4em;
+}

@@ -35,6 +35,9 @@ def newCategory(name):
 def findItem(name):
     return session.query(Item).filter_by(name=name).first()
 
+def findIngredients(item_id):
+    return session.query(Ingredient).filter_by(item_id=item_id).all()    
+
 def findItemID(name):
     item = session.query(Item).filter_by(name=name).one()
     return item.id

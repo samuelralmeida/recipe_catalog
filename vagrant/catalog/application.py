@@ -234,7 +234,17 @@ def showItems(category_name):
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
-    return "show item was chose"
+    item = crud.findItem(item_name)
+    if item == None:
+            flash('This item does not exist')
+            return redirect(url_for('showCategories'))
+    else:
+        ingredients = crud.findIngredients(item.id)
+        if 'username' not in login_session:
+            return render_template('item.html', item=item, ingredients=ingredients)
+        else:
+            log = login_session
+            return render_template('item.html', item=item, ingredients=ingredients, log=log)
 
 @app.route('/catalog/item/create', methods=['GET', 'POST'])
 def createItem():

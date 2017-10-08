@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+	<div class="content-header col-xs-12 col-sm-12">
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<div class="flash_message"> {{ message }} </div>
+		{% endif %}
+		{% endwith %}
+	</div>
+</div>
+
+<div class="content">
+    <div class="row">
+    	<div class="title col-xs-12 col-sm-12">{{ item.name }}</div>
+    </div>
+    <div class="row">
+        <div class="ingredients col-xs-12 col-sm-12">
+            <span class="subtitle">Ingredients: </span><br>
+            {% for ingredient in ingredients %}
+            <span class="text">{{ ingredient.ingredient_name }} |</span>
+            {% endfor %}
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="directions col-xs-12 col-sm-12">
+            <span class="subtitle">Directions: </span><br>
+            <span class="text">{{ item.directions }}</span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="info col-xs-12 col-sm-12">
+            <span class="subtitle">Category: </span><br>
+            <span class="text">{{ item.category.name }}</span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="info col-xs-12 col-sm-12">
+            <span class="subtitle">User: </span><br>
+            <span class="text">{{ item.user.name }}</span>
+        </div>
+    </div>
+    <br>
+</div>
+
+{% endblock %}
