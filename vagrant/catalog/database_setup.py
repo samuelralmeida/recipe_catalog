@@ -5,6 +5,8 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
+from sqlalchemy.dialects.sqlite import DATETIME
+from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -38,13 +40,13 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    # ingredient_id = Column(Integer, ForeignKey('ingredient.id'))
-    # ingredient = relationship(Ingredient)
     directions = Column(String(500))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+    time_created = Column(DATETIME(timezone=True), server_default=func.now())
+    time_updated = Column(DATETIME(timezone=True), onupdate=func.now())
 
     @property
     def serialize(self):
