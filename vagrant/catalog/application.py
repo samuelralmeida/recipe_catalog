@@ -222,7 +222,15 @@ def createCategory():
 
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name):
-    return "show all items of category"
+    categories = crud.findAllCategory()
+    itemsByCategory = crud.findItems_byCategory(category_name)
+    if 'username' not in login_session:
+        return render_template('itemsbycategory.html', categories=categories,
+                                items=itemsByCategory, category_name=category_name)
+    else:
+        log = login_session
+        return render_template('itemsbycategory.html', categories=categories,
+                                items=itemsByCategory, log=log, category_name=category_name)
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):

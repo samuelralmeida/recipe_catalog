@@ -39,6 +39,13 @@ def findItemID(name):
     item = session.query(Item).filter_by(name=name).one()
     return item.id
 
+def findItems_byCategory(category):
+    result = findCategory(category)
+    if not result:
+        return None
+    _id = result.id
+    return session.query(Item).filter_by(category_id=_id).all()
+
 def addIngredients(ingredients, item_id):
     for ingredient in ingredients:
         if ingredient:
