@@ -367,7 +367,7 @@ def editItem(item_name):
                     have_edition = True
                     item_category_id = int(request.form.get('category'))
 
-                if have_edition and have_edition_ingredient:
+                if have_edition_ingredient:
                     ingredients = []
                     ingredients.append(item_ingredient1)
                     ingredients.append(item_ingredient2)
@@ -400,7 +400,16 @@ def editItem(item_name):
                 flash("This item does not exist")
                 return redirect(url_for('showCategories'))
             else:
-                return render_template('edititem.html', item=item)
+                ingredients = crud.findIngredients(item.id)
+                count = 1
+                dict_ingredients = {}
+                for ingredient in ingredients:
+                    dict_ingredients['ingredient'+str(count)] = ingredient.ingredient_name
+                    count += 1
+                categories = crud.findAllCategory()
+                return render_template('edititem.html', item=item,
+                                        ingredients=dict_ingredients,
+                                        categories=categories)
 
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
