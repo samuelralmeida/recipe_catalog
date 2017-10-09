@@ -180,7 +180,8 @@ def disconnect():
 
 @app.route('/catalog.json')
 def JSONcatalog():
-    return "JSON de todo o catálogo"
+    items = crud.findAllItems()
+    return jsonify(item=[r.serialize for r in items])
 
 @app.route('/')
 @app.route('/catalog')
@@ -380,7 +381,7 @@ def editItem(item_name):
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
-                                            category_name=category.name))
+                                            category_name=item.category.name))
                 elif have_edition:
                     ingredients = None
                     crud.editItem(original_name, item_name, item_directions,
@@ -388,7 +389,7 @@ def editItem(item_name):
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
-                                            category_name=category.name))
+                                            category_name=item.category.name))
                 else:
                     flash('You did not change anything')
                     return render_template('edititem.html', item=item)

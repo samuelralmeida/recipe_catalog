@@ -26,12 +26,14 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    item = relationship("Item", backref="category")
 
     @property
     def serialize(self):
         return {
             'name': self.name,
             'id': self.id,
+            'item': self.item,
         }
 
 
@@ -44,20 +46,26 @@ class Item(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
     category_id = Column(Integer, ForeignKey('category.id'))
-    category = relationship(Category)
+    ingredient = relationship("Ingredient", backref='item')
     time_created = Column(DATETIME(timezone=True), server_default=func.now())
     time_updated = Column(DATETIME(timezone=True), onupdate=func.now())
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
+
+        def listOfIngredients(ingredients):
+            list_ingredients = []
+            for i in ingredients:
+                list_ingredients.append(i.ingredient_name)
+            return list_ingredients
+
         return {
             'name': self.name,
             'id': self.id,
-            'category': self.category,
-            'ingredient': self.ingredient,
+            'category': self.category.name,
             'directions': self.directions,
-            'user_id': self.user_id,
+            'ingredients': listOfIngredients(self.ingredient)
         }
 
 
@@ -67,7 +75,6 @@ class Ingredient(Base):
     id = Column(Integer, primary_key=True)
     ingredient_name = Column(String(80), nullable=False)
     item_id = Column(Integer, ForeignKey('item.id'))
-    item = relationship(Item)
 
     @property
     def serialize(self):
@@ -75,6 +82,7 @@ class Ingredient(Base):
             'ingredient_name': self.ingredient_name,
             'item_id': self.item_id,
             'id': self.id,
+            'item': self.item.name,
         }
 
 

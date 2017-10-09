@@ -32,6 +32,12 @@ def newCategory(name):
         session.commit()
         return None
 
+def findAllItems():
+    return session.query(Item).all()
+
+def findAllIngredients():
+    return session.query(Ingredient).all()
+
 def findItem(name):
     return session.query(Item).filter_by(name=name).first()
 
