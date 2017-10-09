@@ -402,14 +402,17 @@ def editItem(item_name):
             else:
                 ingredients = crud.findIngredients(item.id)
                 count = 1
-                dict_ingredients = {}
+                list_ingredients = []
                 for ingredient in ingredients:
-                    dict_ingredients['ingredient'+str(count)] = ingredient.ingredient_name
+                    list_ingredients.append(['ingredient'+str(count),ingredient.ingredient_name])
+                    count += 1
+                while count <= 5:
+                    list_ingredients.append(['ingredient'+str(count),''])
                     count += 1
                 categories = crud.findAllCategory()
                 return render_template('edititem.html', item=item,
-                                        ingredients=dict_ingredients,
-                                        categories=categories)
+                                        ingredients=list_ingredients,
+                                        categories=categories, log=log)
 
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):

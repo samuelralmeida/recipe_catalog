@@ -19,7 +19,7 @@
                 <br>
 
                 <p>Category (Actually: {{item.category.name}}):</p>
-                <select name="category">
+                <select class="category" name="category">
                     <option value="" disabled selected>Select your option</option>
                     {% for category in categories  %}
 
@@ -29,8 +29,8 @@
                 </select>
 
 				<p>Ingredients:</p>
-                {% for key, value in ingredients.iteritems() %}
-                <input class="input ingredient" type="text" name="{{key}}" placeholder="{{value}}">
+                {% for ingredient in ingredients %}
+                <input class="input ingredient" type="text" name="{{ ingredient[0] }}" placeholder="{{ ingredient[1] }}">
                 {% endfor %}
 				<br>
 			</div>
