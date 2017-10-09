@@ -36,11 +36,14 @@ def findItem(name):
     return session.query(Item).filter_by(name=name).first()
 
 def findIngredients(item_id):
-    return session.query(Ingredient).filter_by(item_id=item_id).all()
+    return session.query(Ingredient).filter_by(item_id=item_id).order_by(Ingredient.id).all()
 
 def findItemID(name):
     item = session.query(Item).filter_by(name=name).one()
     return item.id
+
+def findIngredient_byID(ingredient_id):
+    ingredient = session.query(Item).filter_by(id=ingredient_id).one()
 
 def findItems_byCategory(category):
     result = findCategory(category)
@@ -52,8 +55,9 @@ def findItems_byCategory(category):
 def addIngredients(ingredients, item_id):
     for ingredient in ingredients:
         if ingredient:
-            new_ingredient = Ingredient(ingredient_name=ingredient,
-                                      item_id=item_id)
+            new_ingredient = Ingredient(ingredient_name=ingredient, item_id=item_id)
+            session.add(new_ingredient)
+            session.commit()
 
 def newItem(name, directions, ingredients, category_id, user_id):
     result = findItem(name)
@@ -89,31 +93,50 @@ def getUserID(email):
     except:
         return None
 
-def editItem(original_name, item_name, item_directions, item_ingredient1,
-                item_ingredient2, item_ingredient3, item_ingredient4,
-                item_ingredient5, item_category_id):
+def editIngredient(new_ingredient, ingredient_id):
+    ingredient = findIngredient_byID(ingredient_id)
+    ingredient.ingredient_name = new_ingredient
+    session.add(ingredient)
+    session.commit()
+
+def editItem(original_name, item_name, item_directions, ingredients,
+                item_category_id):
     item = findItem(original_name)
-    ingredient = findIngredients(item.id)
     if item is not None:
         if item_name:
             item.name = item_name
-        if item_directions
+        if item_directions:
             item.directions = item_directions
-        if item_ingredient1:
-            item.ingredient1 = item_ingredient1
-        if item_ingredien2:
-            item.ingredient2 = item_ingredient2
-        if item_ingredient3:
-            item.ingredient3 = item_ingredient3
-        if item_ingredient4:
-            item.ingredient4 = item_ingredient4
-        if item_ingredient5:
-            item.ingredient5 = item_ingredient5
         if item_category_id:
             item.category_id = item_category_id
-
         session.add(item)
         session.commit()
+
+        if ingredients is not None:
+            existed_ingredients = []
+            existed_ingredients_id = []
+            for ingredient in findIngredients(item.id):
+                existed_ingredients.append(ingredient.ingredient_name)
+                existed_ingredients_id.append(ingredient.id)
+            idx_existed_ingredients = len(existed_ingredients)-1
+            count_idx = 0
+            while count_idx <= idx_existed_ingredients:
+                if ingredients[count_idx] == None:
+                    count_idx += 1
+                elif ingredients[count_idx] == existed_ingredients[count_idx]:
+                    count_idx += 1
+                else:
+                    editIngredient(ingredients[count_idx], existed_ingredients_id[count_idx])
+                    count_idx += 1
+            new_ingredients = []
+            while count_idx <= 4:
+                if ingredients[count_idx] == None:
+                    count_idx += 1
+                else:
+                    new_ingredients.append(ingredients[count_idx])
+                    count_idx += 1
+            if len(new_ingredients) > 0:
+                addIngredients(new_ingredients, item.id)
 
 def deleteItem(item_name):
     item = findItem(item_name)

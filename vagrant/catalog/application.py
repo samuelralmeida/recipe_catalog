@@ -340,6 +340,7 @@ def editItem(item_name):
                 item_ingredient5 = None
                 item_category_id = None
                 have_edition = False
+                have_edition_ingredient = False
 
                 if request.form['name']:
                     have_edition = True
@@ -348,31 +349,44 @@ def editItem(item_name):
                     have_edition = True
                     item_directions = request.form['directions']
                 if request.form['ingredient1']:
-                    have_edition = True
+                    have_edition_ingredient = True
                     item_ingredient1 = request.form['ingredient1']
                 if request.form['ingredient2']:
-                    have_edition = True
+                    have_edition_ingredient = True
                     item_ingredient2 = request.form['ingredient2']
                 if request.form['ingredient3']:
-                    have_edition = True
+                    have_edition_ingredient = True
                     item_ingredient3 = request.form['ingredient3']
                 if request.form['ingredient4']:
-                    have_edition = True
+                    have_edition_ingredient = True
                     item_ingredient4 = request.form['ingredient4']
                 if request.form['ingredient5']:
-                    have_edition = True
-                    item_ingredient5 = request.form['ingredient51']
+                    have_edition_ingredient = True
+                    item_ingredient5 = request.form['ingredient5']
                 if request.form.get('category') is not None:
                     have_edition = True
                     item_category_id = int(request.form.get('category'))
 
-                if have_edition:
+                if have_edition and have_edition_ingredient:
+                    ingredients = []
+                    ingredients.append(item_ingredient1)
+                    ingredients.append(item_ingredient2)
+                    ingredients.append(item_ingredient3)
+                    ingredients.append(item_ingredient4)
+                    ingredients.append(item_ingredient5)
+
                     crud.editItem(original_name, item_name, item_directions,
-                                    item_ingredient1, item_ingredient2,
-                                    item_ingredient3, item_ingredient4,
-                                    item_ingredient5, item_category_id)
+                                    ingredients, item_category_id)
                     category = crud.findCategory_byID(item_category_id)
-                    flash('Your item has benn edited')
+                    flash('Your item has been edited')
+                    return redirect(url_for('showItem', item_name=item.name,
+                                            category_name=category.name))
+                elif have_edition:
+                    ingredients = None
+                    crud.editItem(original_name, item_name, item_directions,
+                                    ingredients, item_category_id)
+                    category = crud.findCategory_byID(item_category_id)
+                    flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
                                             category_name=category.name))
                 else:
