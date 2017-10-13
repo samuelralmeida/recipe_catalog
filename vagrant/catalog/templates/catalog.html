@@ -15,13 +15,14 @@
 </div>
 
 <div class="container main-content">
-	<br>
+
 	<div class="content-categories col-xs-12 col-sm-8">
 		<div class="row">
 			<div class="title col-xs-12 col-sm-12">
 				recipes by category
 			</div>
 		</div>
+		<br>
 		{% if categories %}
 		{% for category in categories  %}
 		<div class="row">
@@ -37,6 +38,7 @@
 			</div>
 		</div>
 		{% endif %}
+		<br>
 	</div>
 
 	<div class="content-items col-xs-12 col-sm-4">
@@ -45,6 +47,7 @@
 				latest items
 			</div>
 		</div>
+		<br>
 		{% if items %}
 		{% for item in items  %}
 		<div class="row">
@@ -63,6 +66,7 @@
 			</div>
 		</div>
 		{% endif %}
+		<br>
 	</div>
 </div>
 {% endblock %}
