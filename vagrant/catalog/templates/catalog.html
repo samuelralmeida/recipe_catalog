@@ -2,53 +2,67 @@
 
 {% block content %}
 
-<div class="row">
-	<div class="content-header col-xs-12 col-sm-12">
-		{% with messages = get_flashed_messages() %}
-		{% if messages %}
-		<div class="flash_message"> {{ message }} </div>
-		{% endif %}
-		{% endwith %}
-	</div>
-</div>
-
-<div class="row">
-	<div class="content-categories col-xs-12 col-sm-8">
-		<div class="title">RECIPES BY CATEGORY</div>
-		<div class="categories">
-			{% if categories %}
-			{% for category in categories  %}
-			<div class="category">
-				<a href="{{ url_for('showItems', category_name=category.name) }}">{{ category.name }}</a>
-			</div>
-			{% endfor %}
-			{% else %}
-  			<div>
-  				Not categories
-  			</div>
+<div class="container flash-content">
+	<div class="row">
+		<div class="content-header col-xs-12 col-sm-12">
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<div class="flash_message"> {{ message }} </div>
 			{% endif %}
+			{% endwith %}
 		</div>
 	</div>
-
-  <div class="content-items col-xs-12 col-sm-4">
-	  <div class="title">LATEST ITEMS</div>
-	  <div class="items">
-		  {% if items %}
-		  {% for item in items %}
-		  <div class="item">
-			  <a href="{{ url_for('showItem', category_name=item.category.name, item_name=item.name) }}">
-				  <span>{{ item.name }}</span>
-				  <span class="subcategory">({{ item.category.name }})</span>
-			  </a>
-		  </div>
-		  {% endfor %}
-		  {% else %}
-		  <div>
-			  Not items
-		  </div>
-		  {% endif %}
-	  </div>
-  </div>
 </div>
 
+<div class="container main-content">
+	<br>
+	<div class="content-categories col-xs-12 col-sm-8">
+		<div class="row">
+			<div class="title col-xs-12 col-sm-12">
+				recipes by category
+			</div>
+		</div>
+		{% if categories %}
+		{% for category in categories  %}
+		<div class="row">
+			<div class="category col-xs-12 col-sm-12">
+				<a href="{{ url_for('showItems', category_name=category.name) }}">{{ category.name }}</a>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<div class="row">
+			<div class="category col-xs-12 col-sm-12">
+				Not category
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="content-items col-xs-12 col-sm-4">
+		<div class="row">
+			<div class="title col-xs-12 col-sm-12">
+				latest items
+			</div>
+		</div>
+		{% if items %}
+		{% for item in items  %}
+		<div class="row">
+			<div class="item col-xs-12 col-sm-12">
+				<a href="{{ url_for('showItem', category_name=item.category.name, item_name=item.name) }}">
+					<span>{{ item.name }}</span>
+					<span class="subcategory">({{ item.category.name }})</span>
+				</a>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<div class="row">
+			<div class="category col-xs-12 col-sm-12">
+				Not items
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
 {% endblock %}
