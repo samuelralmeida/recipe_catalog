@@ -57,4 +57,9 @@
 		<br>
 	</div>
 </div>
+
+<form method="post" action="/">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+</form>
+
 {% endblock %}

@@ -4,6 +4,7 @@
 from flask import Flask, render_template, url_for, flash
 from flask import jsonify, make_response, request, redirect
 from flask import session as login_session
+from flask_wtf.csrf import CSRFProtect
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import crud
@@ -13,7 +14,11 @@ import json
 import httplib2
 import requests
 
-app = Flask(__name__)
+csrf = CSRFProtect()
+
+def create_app():
+    app = Flask(__name__)
+    csrf.init_app(app)
 
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
@@ -488,5 +493,6 @@ def gdisconnect():
 
 if __name__ == '__main__':
     app.secret_key = '^4u!gn!3Y8Fv'
+    app.wtf_csrf_secret_key = 'aj@2lL!OA0NU'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
