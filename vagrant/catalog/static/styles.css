@@ -71,11 +71,7 @@ body {
     font-size: 1.5em;
 }
 
-.directions {
-    width: 100%;
-}
-
-.name-item, .ingredient {
+.name-item, .ingredient-item, .category-item, .directions-item  {
     width: 100%;
 }
 
