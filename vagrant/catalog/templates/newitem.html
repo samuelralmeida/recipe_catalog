@@ -2,65 +2,115 @@
 
 {% block content %}
 
-<div class="row">
-	<div class="content-header col-xs-12 col-sm-12">
-		{{ error }}
+<div class="container flash-content">
+	<div class="row">
+		<div class="content-header col-xs-12 col-sm-12">
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<div class="flash_message"> {{ message }} </div>
+			{% endif %}
+			{% endwith %}
+		</div>
 	</div>
-	<div class="title">ADD NEW ITEM</div>
 </div>
 
-<div class="row newItem-form">
-	<br>
-	<div>
-		<form action="{{ url_for('createItem') }}" method="POST">
-			<div class="content-ingredient col-xs-12 col-sm-4">
-				<p>Name:</p>
-                <input class="input name-item" type="text" name="name" value="{{ name }}">
-                <br>
-                <div class="error">{{error_name}}</div>
-                <br>
+<div class="container main-content">
 
-				<p>Category:</p>
-				<select class="category" name="category">
-					<option value="" disabled selected>Select your option</option>
-					{% for category in categories  %}
-						<option value="{{ category.id }}">{{ category.name }}</option>
-					{% endfor %}
-				</select>
-				<br>
-				<div class="error">{{error_category}}</div>
-				<br>
+	<div class="row">
+		<div class="title col-xs-12 col-sm-12">
+			create a item
+		</div>
+	</div>
 
-				<p>Ingredients:</p>
-                <input class="input ingredient" type="text" name="ingredient1" value="{{ ingredient1 }}">
-				<br>
-                <input class="input ingredient" type="text" name="ingredient2" value="{{ ingredient2 }}">
-				<br>
-                <input class="input ingredient" type="text" name="ingredient3" value="{{ ingredient3 }}">
-				<br>
-                <input class="input ingredient" type="text" name="ingredient4" value="{{ ingredient4 }}">
-				<br>
-                <input class="input ingredient" type="text" name="ingredient5" value="{{ ingredient5 }}">
-                <br>
-                <div class="error">{{error_ingredients}}</div>
-                <br>
+	<form action="{{ url_for('createItem') }}" method="POST">
+		<div class="createitem-form col-xs-12 col-sm-4">
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div><p>Name:</p></div>
+					<input class="name-item" type="text" name="name" value="{{ name }}">
+					<br>
+					<div class="error">{{error_name}}</div>
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div><p>Category</p></div>
+					<select class="category-item" name="category">
+						<option value="" disabled selected>Select your option</option>
+						{% for category in categories  %}
+
+							<option value="{{ category.id }}">{{ category.name }}</option>
+
+						{% endfor %}
+					</select>
+					<br>
+					<div class="error">{{error_category}}</div>
+					<br>
+				</div>
 			</div>
 
-			<div class="content-ingredient col-xs-12 col-sm-8">
-				<p>Directions:</p>
-				​<textarea class="input directions" rows="12" name="directions">{{ directions }}</textarea>
-				<br>
-				<div class="error">{{error_directions}}</div>
-				<br>
-
-				<input type="submit" name="create" value="Create">
-				|
-				<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div><p>Ingredients</p></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input class="ingredient-item" type="text" name="ingredient1" value="{{ ingredient1 }}">
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input class="ingredient-item" type="text" name="ingredient2" value="{{ ingredient2 }}">
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input class="ingredient-item" type="text" name="ingredient3" value="{{ ingredient3 }}">
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input class="ingredient-item" type="text" name="ingredient4" value="{{ ingredient4 }}">
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input class="ingredient-item" type="text" name="ingredient5" value="{{ ingredient5 }}">
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div class="error">{{error_ingredients}}</div>
+					<br>
+				</div>
+			</div>
+		</div>
+		<div class="createitem-form col-xs-12 col-sm-8">
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div><p>Directions</p></div>
+					​<textarea class="directions-item" rows="12" name="directions">{{ directions }}</textarea>
+					<br>
+					<div class="error">{{error_directions}}</div>
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<input type="submit" name="edit" value="Edit">
+					|
+					<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
+				</div>
 				<br><br>
 			</div>
-
-		</form>
-	</div>
-	<br><br>
+		</div>
+	</form>
 </div>
 {% endblock %}
