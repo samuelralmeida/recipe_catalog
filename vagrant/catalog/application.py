@@ -236,7 +236,8 @@ def showItems(category_name):
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
     item = crud.findItem(item_name)
-    if item == None:
+    category = crud.findCategory(category_name)
+    if item == None or category == None:
             flash('This item does not exist')
             return redirect(url_for('showCategories'))
     else:

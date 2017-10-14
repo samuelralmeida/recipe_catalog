@@ -39,8 +39,10 @@ body {
 }
 
 .content-header {
-    text-align: center;
+    font-family: 'PT Sans', sans-serif;
     padding: 1em;
+    color: #ff0000;
+    font-size: 1.3em;
 }
 
 .log-button {
@@ -81,10 +83,6 @@ body {
 
 .error {
     color: #ff0000;
-}
-
-.newItem-form {
-    background-color: #D3E9F6;
 }
 
 .user-image {

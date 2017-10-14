@@ -2,18 +2,6 @@
 
 {% block content %}
 
-<div class="container flash-content">
-	<div class="row">
-		<div class="content-header col-xs-12 col-sm-12">
-			{% with messages = get_flashed_messages() %}
-			{% if messages %}
-			<div class="flash_message"> {{ message }} </div>
-			{% endif %}
-			{% endwith %}
-		</div>
-	</div>
-</div>
-
 <div class="container main-content">
 	<div class="row">
 		<div class="title col-xs-12 col-sm-12">
