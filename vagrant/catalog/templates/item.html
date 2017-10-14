@@ -2,58 +2,67 @@
 
 {% block content %}
 
-<div class="row">
-	<div class="content-header col-xs-12 col-sm-12">
-		{% with messages = get_flashed_messages() %}
-		{% if messages %}
-		<div class="flash_message"> {{ message }} </div>
-		{% endif %}
-		{% endwith %}
+<div class="container flash-content">
+	<div class="row">
+		<div class="content-header col-xs-12 col-sm-12">
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<div class="flash_message"> {{ message }} </div>
+			{% endif %}
+			{% endwith %}
+		</div>
 	</div>
 </div>
 
-<div class="content">
-    <div class="row">
-    	<div class="title col-xs-12 col-sm-12">{{ item.name }}</div>
-    </div>
-    <div class="row">
-        <div class="ingredients col-xs-12 col-sm-12">
-            <span class="subtitle">Ingredients: </span><br>
-            {% for ingredient in ingredients %}
-            <span class="text">{{ ingredient.ingredient_name }} |</span>
-            {% endfor %}
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="directions col-xs-12 col-sm-12">
-            <span class="subtitle">Directions: </span><br>
-            <span class="text">{{ item.directions }}</span>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="info col-xs-12 col-sm-12">
-            <span class="subtitle">Category: </span><br>
-            <span class="text">{{ item.category.name }}</span>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="info col-xs-12 col-sm-12">
-            {% if own_user %}
-            <span class="subtitle">User: </span>
-            <span class="text">You</span><br>
-            <span class="opt"><a href="{{ url_for('editItem', item_name=item.name) }}">Edit item</a></span>
-            |
-            <span class="opt"><a href="{{ url_for('deleteItem', item_name=item.name) }}">Delete item</a></span>
-            {% else %}
-            <span class="subtitle">User: </span><br>
-            <span class="text">{{ item.user.name }}</span>
-            {% endif %}
-        </div>
-    </div>
-    <br>
-</div>
+<div class="container main-content">
 
+	<div class="row">
+		<div class="title col-xs-12 col-sm-12">
+			{{ item.name }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12 col-sm-12">
+			<div class="subtitle">Ingredients:</div>
+			<div class="text">
+				{% for ingredient in ingredients %}
+				<span class="text">{{ ingredient.ingredient_name }} |</span>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12">
+			<div class="subtitle">Directions:</div>
+			<div class="text">{{ item.directions }}</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12">
+			<div class="subtitle">Category:</div>
+			<div class="text">{{ item.category.name }}</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12">
+			<div>
+				{% if own_user %}
+				<span class="subtitle">User: </span>
+				<span class="text">You</span><br>
+				<span class="opt"><a href="{{ url_for('editItem', item_name=item.name) }}">Edit item</a></span>
+				|
+				<span class="opt"><a href="{{ url_for('deleteItem', item_name=item.name) }}">Delete item</a></span>
+				{% else %}
+				<span class="subtitle">User: </span><br>
+				<span class="text">{{ item.user.name }}</span>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<br>
+</div>
 {% endblock %}
