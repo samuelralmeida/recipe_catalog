@@ -7,18 +7,23 @@ from flask import session as login_session
 from flask_wtf.csrf import CSRFProtect
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from werkzeug.utils import secure_filename
 import crud
 import random
 import string
 import json
 import httplib2
 import requests
+import os
 
 csrf = CSRFProtect()
 
-def create_app():
-    app = Flask(__name__)
-    csrf.init_app(app)
+UPLOAD_FOLDER = '/images'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+
+app = Flask(__name__)
+csrf.init_app(app)
 
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
