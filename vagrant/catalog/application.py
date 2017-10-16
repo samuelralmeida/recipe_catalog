@@ -290,7 +290,7 @@ def createItem():
             ingredient4 = request.form['ingredient4']
             ingredient5 = request.form['ingredient5']
             category_id = request.form.get('category')
-            file = request.files['file']
+            image = request.files['file']
             # carregar usuário automaticamente de login_session
             user_id = login_session['user_id']
 
@@ -324,14 +324,12 @@ def createItem():
                 params['error_category'] = "You must choose a category"
 
             have_file = False
-            if file:
-                if allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    file_url = file.url(filename)
+            if image:
+                if allowed_file(image.filename):
+                    filename = secure_filename(image.filename)
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     have_file = True
-                    print 'filename', filename
-                    print 'url', file_url
                 else:
                     have_error = True
                     params['error_file'] = 'You must select .png, .jpg or .jpeg file'
