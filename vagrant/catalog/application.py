@@ -4,7 +4,7 @@
 from flask import Flask, render_template, url_for, flash
 from flask import jsonify, make_response, request, redirect
 from flask import session as login_session
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from werkzeug.utils import secure_filename
@@ -18,13 +18,14 @@ import os
 
 csrf = CSRFProtect()
 
-UPLOAD_FOLDER = '/static/images'
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
 app = Flask(__name__)
-#csrf.init_app(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+csrf.init_app(app)
 
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
@@ -289,6 +290,7 @@ def createItem():
             ingredient4 = request.form['ingredient4']
             ingredient5 = request.form['ingredient5']
             category_id = request.form.get('category')
+            file = request.files['file']
             # carregar usuário automaticamente de login_session
             user_id = login_session['user_id']
 
@@ -321,12 +323,31 @@ def createItem():
                 have_error = True
                 params['error_category'] = "You must choose a category"
 
+            have_file = False
+            if file:
+                if allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    file_url = file.url(filename)
+                    have_file = True
+                    print 'filename', filename
+                    print 'url', file_url
+                else:
+                    have_error = True
+                    params['error_file'] = 'You must select .png, .jpg or .jpeg file'
+
             if have_error:
                 return render_template('newitem.html', categories=categories,
                                         log=log, **params)
 
-            crud_function = crud.newItem(name, directions, ingredients,
+            if have_file:
+                crud_function = crud.newItem(name, directions, ingredients,
+                                int(category_id), user_id=user_id,
+                                filename=filename, file_url=file_url)
+            else:
+                crud_function = crud.newItem(name, directions, ingredients,
                             int(category_id), user_id=user_id)
+
             if crud_function:
                 return render_template('newitem.html', error=crud_function,
                                        categories=categories, log=log, **params)
@@ -502,6 +523,10 @@ def gdisconnect():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return render_template('csrf_error.html', reason=e.description), 400
 
 if __name__ == '__main__':
     app.secret_key = '^4u!gn!3Y8Fv'

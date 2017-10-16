@@ -11,6 +11,7 @@
 	</div>
 
 	<form action="{{ url_for('editItem', item_name=item.name) }}" method="POST">
+		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 		<div class="edititem-form col-xs-12 col-sm-4">
 			<div class="row">
 				<div class="col-xs-12 col-sm-12">

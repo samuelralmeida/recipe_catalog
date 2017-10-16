@@ -65,14 +65,16 @@ def addIngredients(ingredients, item_id):
             session.add(new_ingredient)
             session.commit()
 
-def newItem(name, directions, ingredients, category_id, user_id):
+def newItem(name, directions, ingredients, category_id, user_id,
+            filename=None, file_url=None):
     result = findItem(name)
     if result:
         error = "A item with that name already exists"
         return error
     else:
         new_item = Item(name=name, directions=directions,
-                        category_id=category_id, user_id=user_id)
+                        category_id=category_id, user_id=user_id,
+                        image_filename=filename, image_url=file_url)
         session.add(new_item)
         session.commit()
         item_id = findItemID(name)
