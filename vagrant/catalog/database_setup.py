@@ -42,13 +42,14 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    directions = Column(String(500))
+    directions = Column(String(1000))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    image_filename = Column(String, default=None, nullable=True)
+    image_url = Column(String, default=None, nullable=True)
     category_id = Column(Integer, ForeignKey('category.id'))
     ingredient = relationship("Ingredient", backref='item')
     time_created = Column(DATETIME(timezone=True), server_default=func.now())
-    time_updated = Column(DATETIME(timezone=True), onupdate=func.now())
 
     @property
     def serialize(self):

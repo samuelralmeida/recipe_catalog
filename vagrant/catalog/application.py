@@ -18,12 +18,13 @@ import os
 
 csrf = CSRFProtect()
 
-UPLOAD_FOLDER = '/images'
+UPLOAD_FOLDER = '/static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
 app = Flask(__name__)
-csrf.init_app(app)
+#csrf.init_app(app)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
@@ -36,6 +37,7 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
+@csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -91,6 +93,7 @@ def fbconnect():
     flash("Now logged in as %s" % login_session['username'])
     return 'Logged in'
 
+@csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -264,6 +267,10 @@ def showItem(category_name, item_name):
             else:
                 return render_template('item.html', item=item,
                                         ingredients=ingredients, log=log)
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/catalog/item/create', methods=['GET', 'POST'])
 def createItem():

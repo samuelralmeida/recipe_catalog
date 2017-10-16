@@ -10,7 +10,7 @@
 		</div>
 	</div>
 
-	<form action="{{ url_for('createItem') }}" method="POST">
+	<form action="{{ url_for('createItem') }}" method="POST" enctype="multipart/form-data">
 		<div class="createitem-form col-xs-12 col-sm-4">
 			<div class="row">
 				<div class="col-xs-12 col-sm-12">
@@ -92,7 +92,18 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-12">
-					<input type="submit" name="edit" value="Edit">
+					<div><p>Image</p></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12">
+					<div><input class="file-item" type=file name=file></div>
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 text-right">
+					<input type="submit" name="create" value="Create">
 					|
 					<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
 				</div>
