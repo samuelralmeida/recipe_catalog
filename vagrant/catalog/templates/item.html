@@ -8,8 +8,63 @@
 		<div class="title col-xs-12 col-sm-12">
 			{{ item.name }}
 		</div>
+		<br>
 	</div>
 
+	{% if item.image_filename %}
+	<div class="col-xs-12 col-sm-6">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<div class="subtitle">Ingredients:</div>
+				<div class="text">
+					{% for ingredient in ingredients %}
+					<span class="text">{{ ingredient.ingredient_name }} |</span>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<div class="subtitle">Directions:</div>
+				<div class="text">{{ item.directions }}</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<div class="subtitle">Category:</div>
+				<div class="text">{{ item.category.name }}</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<div>
+					{% if own_user %}
+					<span class="subtitle">User: </span>
+					<span class="text">You</span><br>
+					<span class="opt"><a href="{{ url_for('editItem', item_name=item.name) }}">Edit item</a></span>
+					|
+					<span class="opt"><a href="{{ url_for('deleteItem', item_name=item.name) }}">Delete item</a></span>
+					{% else %}
+					<span class="subtitle">User: </span><br>
+					<span class="text">{{ item.user.name }}</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xs-12 col-sm-6">
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<img class="recipe-img" src="{{item.image_url}}" alt="{{item.name}} image">
+			</div>
+			<br>
+		</div>
+	</div>
+
+	{% else %}
 	<div class="row">
 		<div class="col-xs-12 col-sm-12">
 			<div class="subtitle">Ingredients:</div>
@@ -51,6 +106,7 @@
 			</div>
 		</div>
 	</div>
+	{% endif %}
 	<br>
 </div>
 

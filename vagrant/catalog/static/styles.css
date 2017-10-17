@@ -89,6 +89,10 @@ body {
     width: 50px;
 }
 
+.recipe-img {
+    width: 100%;
+}
+
 @media only screen and (max-width: 768px) {
 	.user-image{
 		display: none;

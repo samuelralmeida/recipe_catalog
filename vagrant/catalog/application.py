@@ -18,8 +18,8 @@ import os
 
 csrf = CSRFProtect()
 
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static/uploads')
+
+UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
@@ -328,7 +328,8 @@ def createItem():
                 if allowed_file(image.filename):
                     filename = secure_filename(image.filename)
                     image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)[1:]
+                    print 'file_url', file_url
                     have_file = True
                 else:
                     have_error = True
@@ -525,6 +526,11 @@ def gdisconnect():
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     return render_template('csrf_error.html', reason=e.description), 400
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('Too large')
+    return redirect(url_for('showCategories'))
 
 if __name__ == '__main__':
     app.secret_key = '^4u!gn!3Y8Fv'
