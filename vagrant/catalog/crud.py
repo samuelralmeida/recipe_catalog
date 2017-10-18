@@ -108,7 +108,7 @@ def editIngredient(new_ingredient, ingredient_id):
     session.commit()
 
 def editItem(original_name, item_name, item_directions, ingredients,
-                item_category_id):
+                item_category_id, filename, file_url):
     item = findItem(original_name)
     if item is not None:
         if item_name:
@@ -117,6 +117,9 @@ def editItem(original_name, item_name, item_directions, ingredients,
             item.directions = item_directions
         if item_category_id:
             item.category_id = item_category_id
+        if filename:
+            item.image_filename = filename
+            item.image_url = file_url
         session.add(item)
         session.commit()
 

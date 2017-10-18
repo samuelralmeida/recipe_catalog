@@ -329,7 +329,6 @@ def createItem():
                     filename = secure_filename(image.filename)
                     image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                     file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)[1:]
-                    print 'file_url', file_url
                     have_file = True
                 else:
                     have_error = True
@@ -378,6 +377,7 @@ def editItem(item_name):
                 item_ingredient4 = None
                 item_ingredient5 = None
                 item_category_id = None
+                item_image = None
                 have_edition = False
                 have_edition_ingredient = False
 
@@ -405,6 +405,9 @@ def editItem(item_name):
                 if request.form.get('category') is not None:
                     have_edition = True
                     item_category_id = int(request.form.get('category'))
+                if request.files['file']:
+                    have_edition = True
+                    item_image = request.files['file']
 
                 if have_edition_ingredient:
                     ingredients = []
@@ -414,8 +417,23 @@ def editItem(item_name):
                     ingredients.append(item_ingredient4)
                     ingredients.append(item_ingredient5)
 
+                have_file = False
+                if item_image:
+                    if allowed_file(image.filename):
+                        os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.image_filename))
+                        filename = secure_filename(item_image.filename)
+                        item_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)[1:]
+                    else:
+                        flash("Your image wasn't edited because it must be .png, .jpg or .jpeg file")
+                        filename = None
+                        file_url = None
+                else:
+                    filename = None
+                    file_url = None
+
                     crud.editItem(original_name, item_name, item_directions,
-                                    ingredients, item_category_id)
+                                    ingredients, item_category_id, filename, file_url)
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
