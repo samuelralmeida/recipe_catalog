@@ -183,6 +183,7 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     return 'Logged in'
 
+
 # To log out user
 @app.route('/disconnect')
 def disconnect():
@@ -246,9 +247,11 @@ def createCategory():
             return render_template('newcategory.html', log=log)
 
 
+# Show all recipes by a specific category
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name):
     categories = crud.findAllCategory()
+    # Find items by category
     itemsByCategory = crud.findItems_byCategory(category_name)
     if 'username' not in login_session:
         return render_template('itemsbycategory.html', categories=categories,
@@ -261,8 +264,10 @@ def showItems(category_name):
                                category_name=category_name)
 
 
+# Show a specific recipe
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
+    # Find the recipe requested
     item = crud.findItem(item_name)
     category = crud.findCategory(category_name)
     if item is None or category is None:
@@ -284,11 +289,13 @@ def showItem(category_name, item_name):
                                        ingredients=ingredients)
 
 
+# Check if file upload is a type allowed
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Create a new recipe
 @app.route('/catalog/item/create', methods=['GET', 'POST'])
 def createItem():
     if 'username' not in login_session:
@@ -307,7 +314,7 @@ def createItem():
             ingredient5 = request.form['ingredient5']
             category_id = request.form.get('category')
             image = request.files['file']
-            # carregar usuário automaticamente de login_session
+            # Get user from login_session
             user_id = login_session['user_id']
 
             have_error = False
@@ -378,9 +385,9 @@ def createItem():
         else:
             return render_template('newitem.html', categories=categories,
                                    log=log)
-        return "create a item"
 
 
+# Edit a recipe
 @app.route('/catalog/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(item_name):
     if 'username' not in login_session:
@@ -390,6 +397,7 @@ def editItem(item_name):
         log = login_session
         item = crud.findItem(item_name)
         if request.method == 'POST':
+            # Only the user that created can edit
             if item.user_id == login_session['user_id']:
                 original_name = item.name
                 categories = crud.findAllCategory()
@@ -502,6 +510,7 @@ def editItem(item_name):
                                        categories=categories, log=log)
 
 
+# Delete a recipe
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
     if 'username' not in login_session:
@@ -511,6 +520,7 @@ def deleteItem(item_name):
         log = login_session
         item = crud.findItem(item_name)
         if request.method == 'POST':
+            # Only the user that created can delete
             if item.user_id == login_session['user_id']:
                 if item.image_filename:
                     os.remove(os.path.join(app.config['UPLOAD_FOLDER'],
@@ -529,6 +539,7 @@ def deleteItem(item_name):
                 return render_template('deleteitem.html', item=item, log=log)
 
 
+# Empty login_session if provides is Facebook
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['api_id']
@@ -549,6 +560,7 @@ def fbdisconnect():
     return "you have been logged out"
 
 
+# Empty login_session if provides is Google
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
@@ -580,11 +592,14 @@ def gdisconnect():
         return response
 
 
+# Handle a CSRF error that may occur
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     return render_template('csrf_error.html', reason=e.description), 400
 
 
+# The maximum file size to upload is 2MB,
+# larger files generate error 413 and are handled by this route
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('Too large')
