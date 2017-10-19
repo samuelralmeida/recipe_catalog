@@ -21,11 +21,14 @@ csrf = CSRFProtect()
 
 
 UPLOAD_FOLDER = './static/uploads'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+# Extensions that are allowed to upload
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# 2MB is the largest size of upload file
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 csrf.init_app(app)
 
 CLIENT_ID = json.loads(
