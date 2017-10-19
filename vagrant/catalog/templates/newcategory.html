@@ -4,24 +4,35 @@
 
 <div class="container main-content">
 
-</div>
-
 	<div class="row">
 		<div class="title col-xs-12 col-sm-12">
 			create a category
 		</div>
 	</div>
 
-
 	<form action="{{ url_for('createCategory') }}" method="POST">
 		<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 
-		<p>Name:</p>
-		<input type="text" size='30' name="name">
-		<br><br>
-		<input type="submit" name="create" value="Create">
-		|
-		<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
-
+		<div class="row">
+			<div class="col-xs-12 col-sm-12"
+				<p>Name:</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<input type="text" size='30' name="name">
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-xs-12 col-sm-12">
+				<input type="submit" name="create" value="Create">
+				|
+				<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
+			</div>
+		</div>
 	</form>
+	<br>
+
+</div>
 {% endblock %}
