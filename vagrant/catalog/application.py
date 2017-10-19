@@ -478,7 +478,8 @@ def deleteItem(item_name):
         item = crud.findItem(item_name)
         if request.method == 'POST':
             if item.user_id == login_session['user_id']:
-                os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.image_filename))
+                if item.image_filename:
+                    os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.image_filename))
                 crud.deleteItem(item_name)
                 flash('This item has been deleted')
                 return redirect(url_for('showCategories'))
