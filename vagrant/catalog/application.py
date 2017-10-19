@@ -274,11 +274,11 @@ def showItem(category_name, item_name):
             log = login_session
             if item.user_id == login_session['user_id']:
                 own_user = True
-                return render_template('item.html', log=log, own_user=own_user
+                return render_template('item.html', log=log, own_user=own_user,
                                        ingredients=ingredients, item=item)
             else:
-                return render_template('item.html', item=item,
-                                       ingredients=ingredients, log=log)
+                return render_template('item.html', item=item, log=log,
+                                       ingredients=ingredients)
 
 
 def allowed_file(filename):
@@ -442,7 +442,7 @@ def editItem(item_name):
                 if item_image:
                     if allowed_file(image.filename):
                         os.remove(os.path.join(
-                                            app.config['UPLOADED_ITEMS_DEST'],
+                                            app.config['UPLOAD_FOLDER'],
                                             item.image_filename))
                         filename = secure_filename(item_image.filename)
                         item_image.save(
@@ -510,7 +510,7 @@ def deleteItem(item_name):
         if request.method == 'POST':
             if item.user_id == login_session['user_id']:
                 if item.image_filename:
-                    os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'],
+                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'],
                                            item.image_filename))
                 crud.deleteItem(item_name)
                 flash('This item has been deleted')
