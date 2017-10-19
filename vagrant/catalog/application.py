@@ -428,9 +428,6 @@ def editItem(item_name):
                         flash("Your image wasn't edited because it must be .png, .jpg or .jpeg file")
                         filename = None
                         file_url = None
-                else:
-                    filename = None
-                    file_url = None
 
                     crud.editItem(original_name, item_name, item_directions,
                                     ingredients, item_category_id, filename, file_url)
@@ -441,7 +438,7 @@ def editItem(item_name):
                 elif have_edition:
                     ingredients = None
                     crud.editItem(original_name, item_name, item_directions,
-                                    ingredients, item_category_id)
+                                    ingredients, item_category_id, filename=None, file_url=None)
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,

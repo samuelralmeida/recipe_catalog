@@ -59,10 +59,18 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-12">
+					<div><p>Actually: {{item.image_filename}}</p></div>
+					<div><input class="file-item" type=file name=file></div>
+					<br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 text-right">
 					<input type="submit" name="edit" value="Edit">
 					|
 					<a class="header-link" href="{{ url_for('showCategories') }}">Cancel</a>
 				</div>
+				<br>
 			</div>
 		</div>
 	</form>
