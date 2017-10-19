@@ -16,6 +16,7 @@ import httplib2
 import requests
 import os
 
+# Protect application from third party attack
 csrf = CSRFProtect()
 
 
@@ -40,6 +41,7 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
+# Log in using Facebook API
 @csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
@@ -96,6 +98,7 @@ def fbconnect():
     return 'Logged in'
 
 
+# Log in using Google API
 @csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -180,7 +183,7 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     return 'Logged in'
 
-
+# To log out user
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
@@ -196,16 +199,20 @@ def disconnect():
         return redirect(url_for('showCategories'))
 
 
+# Provide all recipes as a JSON endpoint
 @app.route('/catalog.json')
 def JSONcatalog():
     items = crud.findAllItems()
     return jsonify(item=[r.serialize for r in items])
 
 
+# Home page of web app
 @app.route('/')
 @app.route('/catalog')
 def showCategories():
+    # To list all recipes' categories
     categories = crud.findAllCategory()
+    # To list 10 recent items that were added
     items = crud.findRecentItems()
     if 'username' not in login_session:
         return render_template('catalog.html', categories=categories,
@@ -216,31 +223,27 @@ def showCategories():
                                items=items, log=log)
 
 
-# This route only can be access for adim at the end of the app
+# To create a category
 @app.route('/catalog/category/create', methods=['GET', 'POST'])
 def createCategory():
     if 'username' not in login_session:
-            flash('You are not administrator')
+            flash('You are not logged in')
             return redirect(url_for('showCategories'))
     else:
         user_id = crud.getUserID(login_session['email'])
         user = crud.getUserInfo(user_id)
-        if user.group == "admin":
-            log = True
-            if request.method == 'POST':
-                new_category_name = request.form['name']
-                crud_function = crud.newCategory(new_category_name)
-                if crud_function:
-                    return render_template('newcategory.html',
-                                           error=crud_function, log=log)
-                else:
-                    flash('Category has been created')
-                    return redirect(url_for('showCategories'))
+        log = True
+        if request.method == 'POST':
+            new_category_name = request.form['name']
+            crud_function = crud.newCategory(new_category_name)
+            if crud_function:
+                return render_template('newcategory.html',
+                                       error=crud_function, log=log)
             else:
-                return render_template('newcategory.html', log=log)
+                flash('Category has been created')
+                return redirect(url_for('showCategories'))
         else:
-            flash('You are not administrator')
-            return redirect(url_for('showCategories'))
+            return render_template('newcategory.html', log=log)
 
 
 @app.route('/catalog/<string:category_name>/items')
