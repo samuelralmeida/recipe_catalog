@@ -31,12 +31,14 @@ CLIENT_ID = json.loads(
     open('g_client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Vóisa Recipes"
 
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
+
 
 @csrf.exempt
 @app.route('/fbconnect', methods=['POST'])
@@ -77,15 +79,14 @@ def fbconnect():
     login_session['access_token'] = stored_token
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.8/me/picture?{}&redirect=0&height=200&width=200'.format(
-        token)
+    url = ("https://graph.facebook.com/v2.8/me/"
+           "picture?{}&redirect=0&height=200&width=200".format(token))
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
     data = json.loads(result)
-
     login_session['picture'] = data["data"]["url"]
 
-    #see if user exists
+    # See if user exists
     user_id = crud.getUserID(login_session['email'])
     if not user_id:
         user_id = crud.createUser(login_session)
@@ -93,6 +94,7 @@ def fbconnect():
 
     flash("Now logged in as %s" % login_session['username'])
     return 'Logged in'
+
 
 @csrf.exempt
 @app.route('/gconnect', methods=['POST'])
@@ -147,8 +149,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps("Current user is already"
+                                            " connected"), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -178,6 +180,7 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     return 'Logged in'
 
+
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
@@ -192,10 +195,12 @@ def disconnect():
         flash("You were not logged in")
         return redirect(url_for('showCategories'))
 
+
 @app.route('/catalog.json')
 def JSONcatalog():
     items = crud.findAllItems()
     return jsonify(item=[r.serialize for r in items])
+
 
 @app.route('/')
 @app.route('/catalog')
@@ -203,13 +208,15 @@ def showCategories():
     categories = crud.findAllCategory()
     items = crud.findRecentItems()
     if 'username' not in login_session:
-        return render_template('catalog.html', categories=categories, items=items)
+        return render_template('catalog.html', categories=categories,
+                               items=items)
     else:
         log = login_session
         return render_template('catalog.html', categories=categories,
-                                items=items, log=log)
+                               items=items, log=log)
 
-#this route only can be access for adim at the end of the app
+
+# This route only can be access for adim at the end of the app
 @app.route('/catalog/category/create', methods=['GET', 'POST'])
 def createCategory():
     if 'username' not in login_session:
@@ -225,7 +232,7 @@ def createCategory():
                 crud_function = crud.newCategory(new_category_name)
                 if crud_function:
                     return render_template('newcategory.html',
-                                            error=crud_function, log=log)
+                                           error=crud_function, log=log)
                 else:
                     flash('Category has been created')
                     return redirect(url_for('showCategories'))
@@ -235,43 +242,49 @@ def createCategory():
             flash('You are not administrator')
             return redirect(url_for('showCategories'))
 
+
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name):
     categories = crud.findAllCategory()
     itemsByCategory = crud.findItems_byCategory(category_name)
     if 'username' not in login_session:
         return render_template('itemsbycategory.html', categories=categories,
-                                items=itemsByCategory, category_name=category_name)
+                               items=itemsByCategory,
+                               category_name=category_name)
     else:
         log = login_session
         return render_template('itemsbycategory.html', categories=categories,
-                                items=itemsByCategory, log=log, category_name=category_name)
+                               items=itemsByCategory, log=log,
+                               category_name=category_name)
+
 
 @app.route('/catalog/<string:category_name>/<string:item_name>')
 def showItem(category_name, item_name):
     item = crud.findItem(item_name)
     category = crud.findCategory(category_name)
-    if item == None or category == None:
+    if item is None or category is None:
             flash('This item does not exist')
             return redirect(url_for('showCategories'))
     else:
         ingredients = crud.findIngredients(item.id)
         if 'username' not in login_session:
-            return render_template('item.html', item=item, ingredients=ingredients)
+            return render_template('item.html', item=item,
+                                   ingredients=ingredients)
         else:
             log = login_session
             if item.user_id == login_session['user_id']:
                 own_user = True
-                return render_template('item.html', item=item,
-                                        ingredients=ingredients, log=log,
-                                        own_user=own_user)
+                return render_template('item.html', log=log, own_user=own_user
+                                       ingredients=ingredients, item=item)
             else:
                 return render_template('item.html', item=item,
-                                        ingredients=ingredients, log=log)
+                                       ingredients=ingredients, log=log)
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/catalog/item/create', methods=['GET', 'POST'])
 def createItem():
@@ -317,7 +330,8 @@ def createItem():
 
             if ingredients.count(u'') == 5:
                 have_error = True
-                params['error_ingredients'] = "At least one ingredient is required"
+                params['error_ingredients'] = "At least one ingredient is" \
+                                              " required"
 
             if category_id is None:
                 have_error = True
@@ -327,35 +341,42 @@ def createItem():
             if image:
                 if allowed_file(image.filename):
                     filename = secure_filename(image.filename)
-                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)[1:]
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'],
+                                            filename))
+                    file_url = os.path.join(app.config['UPLOAD_FOLDER'],
+                                            filename)[1:]
                     have_file = True
                 else:
                     have_error = True
-                    params['error_file'] = 'You must select .png, .jpg or .jpeg file'
+                    params['error_file'] = "You must select .png, .jpg or" \
+                                           " .jpeg file"
 
             if have_error:
                 return render_template('newitem.html', categories=categories,
-                                        log=log, **params)
+                                       log=log, **params)
 
             if have_file:
                 crud_function = crud.newItem(name, directions, ingredients,
-                                int(category_id), user_id=user_id,
-                                filename=filename, file_url=file_url)
+                                             int(category_id), user_id,
+                                             filename, file_url)
             else:
                 crud_function = crud.newItem(name, directions, ingredients,
-                            int(category_id), user_id=user_id)
+                                             int(category_id), user_id)
 
             if crud_function:
                 return render_template('newitem.html', error=crud_function,
-                                       categories=categories, log=log, **params)
+                                       categories=categories, log=log,
+                                       **params)
             else:
                 flash('Item has been created')
                 category = crud.findCategory_byID(category_id)
-                return redirect(url_for('showItems', category_name=category.name))
+                return redirect(url_for('showItems',
+                                        category_name=category.name))
         else:
-            return render_template('newitem.html', categories=categories, log=log)
+            return render_template('newitem.html', categories=categories,
+                                   log=log)
         return "create a item"
+
 
 @app.route('/catalog/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(item_name):
@@ -420,17 +441,24 @@ def editItem(item_name):
                 have_file = False
                 if item_image:
                     if allowed_file(image.filename):
-                        os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.image_filename))
+                        os.remove(os.path.join(
+                                            app.config['UPLOADED_ITEMS_DEST'],
+                                            item.image_filename))
                         filename = secure_filename(item_image.filename)
-                        item_image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        file_url = os.path.join(app.config['UPLOAD_FOLDER'], filename)[1:]
+                        item_image.save(
+                                    os.path.join(app.config['UPLOAD_FOLDER'],
+                                                 filename))
+                        file_url = os.path.join(app.config['UPLOAD_FOLDER'],
+                                                filename)[1:]
                     else:
-                        flash("Your image wasn't edited because it must be .png, .jpg or .jpeg file")
+                        flash("Your image wasn't edited because it must be "
+                              ".png, .jpg or .jpeg file")
                         filename = None
                         file_url = None
 
                     crud.editItem(original_name, item_name, item_directions,
-                                    ingredients, item_category_id, filename, file_url)
+                                  ingredients, item_category_id, filename,
+                                  file_url)
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
@@ -438,7 +466,8 @@ def editItem(item_name):
                 elif have_edition:
                     ingredients = None
                     crud.editItem(original_name, item_name, item_directions,
-                                    ingredients, item_category_id, filename=None, file_url=None)
+                                  ingredients, item_category_id, filename=None,
+                                  file_url=None)
                     category = crud.findCategory_byID(item_category_id)
                     flash('Your item has been edited')
                     return redirect(url_for('showItem', item_name=item.name,
@@ -458,15 +487,17 @@ def editItem(item_name):
                 count = 1
                 list_ingredients = []
                 for ingredient in ingredients:
-                    list_ingredients.append(['ingredient'+str(count),ingredient.ingredient_name])
+                    list_ingredients.append(['ingredient'+str(count),
+                                             ingredient.ingredient_name])
                     count += 1
                 while count <= 5:
-                    list_ingredients.append(['ingredient'+str(count),''])
+                    list_ingredients.append(['ingredient'+str(count), ''])
                     count += 1
                 categories = crud.findAllCategory()
                 return render_template('edititem.html', item=item,
-                                        ingredients=list_ingredients,
-                                        categories=categories, log=log)
+                                       ingredients=list_ingredients,
+                                       categories=categories, log=log)
+
 
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
@@ -479,7 +510,8 @@ def deleteItem(item_name):
         if request.method == 'POST':
             if item.user_id == login_session['user_id']:
                 if item.image_filename:
-                    os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'], item.image_filename))
+                    os.remove(os.path.join(app.config['UPLOADED_ITEMS_DEST'],
+                                           item.image_filename))
                 crud.deleteItem(item_name)
                 flash('This item has been deleted')
                 return redirect(url_for('showCategories'))
@@ -487,18 +519,20 @@ def deleteItem(item_name):
                 flash('You can not delete item by other user')
                 return redirect(url_for('showCategories'))
         else:
-            if item == None:
+            if item is None:
                 flash('This item does not exist')
                 return redirect(url_for('showCategories'))
             else:
                 return render_template('deleteitem.html', item=item, log=log)
+
 
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['api_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = ('https://graph.facebook.com/{}/'
+           'permissions?access_token={}'.format(facebook_id, access_token))
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     del login_session['access_token']
@@ -510,6 +544,7 @@ def fbdisconnect():
     del login_session['provider']
     del login_session['state']
     return "you have been logged out"
+
 
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -536,13 +571,16 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for'
+                                            'given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     return render_template('csrf_error.html', reason=e.description), 400
+
 
 @app.errorhandler(413)
 def request_entity_too_large(error):

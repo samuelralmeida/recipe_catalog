@@ -10,6 +10,7 @@ from sqlalchemy.sql import func
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'user'
 
