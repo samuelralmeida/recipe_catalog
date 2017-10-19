@@ -23,16 +23,16 @@
         </div>
         {% if log %}
         <ul class="nav navbar-nav">
-            <li><a href="{{ url_for('createItem') }}">Create Item</a></li>
-            <li><a href="{{ url_for('createCategory') }}">Create Category</a></li>
+            <li><a class="sub-brand" href="{{ url_for('createItem') }}">Create Item</a></li>
+            <li><a class="sub-brand" href="{{ url_for('createCategory') }}">Create Category</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{ url_for('disconnect') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a class="sub-brand" href="{{ url_for('disconnect') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             <li><img class="user-image" src={{log.picture}} alt="User picture"></li>
         </ul>
         {% else %}
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{ url_for('showLogin') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            <li><a class="sub-brand" href="{{ url_for('showLogin') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
         {% endif %}
     </div>
@@ -41,7 +41,7 @@
 <div class="container">
     <div class="row">
 		<div class="col-xs-12 col-sm-12">
-            <p class="slogan">because you can not miss the recipes of our grandparents</p>
+            <p class="slogan">Because you can not miss the recipes of our grandparents.</p>
         </div>
     </div>
 </div>
